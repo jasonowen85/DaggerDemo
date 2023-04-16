@@ -1,6 +1,4 @@
-plugins {
-    id 'com.android.library'
-}
+
 apply from: '../../../build-scripts/common_gradle/android_module.gradle'
 //apply from: './maven_publish.gradle'
 

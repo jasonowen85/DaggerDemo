@@ -9,7 +9,7 @@ import javax.inject.Scope;
 /**
  * 文件命名 注解
  */
-@Qualifier
+@Scope
 @Retention(RetentionPolicy.RUNTIME)
 public @interface SubComponentScope {
 }

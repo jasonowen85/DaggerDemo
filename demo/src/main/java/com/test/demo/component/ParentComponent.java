@@ -7,7 +7,7 @@ import com.test.demo.viewmodel.FirstFragmentViewModel;
 import dagger.Component;
 
 @SubComponentScope
-@Component(modules = {FirstFragmentViewModel.class})
+@Component
 public interface ParentComponent {
     void inject(FirstFragmentViewModel firstFragmentViewModel);
 

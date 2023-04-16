@@ -1,7 +1,7 @@
 apply from: '../../../build-scripts/common_gradle/android_app.gradle'
 
 android {
-    compileSdkVersion build_versions.compile_sdk
+    compileSdkVersion 33
     buildToolsVersion build_versions.build_tools
     defaultConfig {
         applicationId "com.mvvm.demo"
@@ -13,10 +13,18 @@ android {
         consumerProguardFiles "consumer-rules.pro"
     }
 
-    android {
-        compileOptions {
-            sourceCompatibility 1.8
-            targetCompatibility 1.8
+    signingConfigs {
+        debug {
+            keyAlias 'android-6w'
+            keyPassword 'android-6w-2019'
+            storeFile file('adayo-store.jks')
+            storePassword 'IVI-Android-2019'
+        }
+        release {
+            keyAlias 'android-6w'
+            keyPassword 'android-6w-2019'
+            storeFile file('adayo-store.jks')
+            storePassword 'IVI-Android-2019'
         }
     }
 }

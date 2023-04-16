@@ -7,6 +7,5 @@
 /captures
 .externalNativeBuild
 .cxx
-*.log
 *.apk
 /.idea/

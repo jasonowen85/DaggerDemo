@@ -11,7 +11,7 @@ android {
     compileSdkVersion build_versions.compile_sdk
     buildToolsVersion build_versions.build_tools
     defaultConfig {
-        minSdkVersion 25
+        minSdkVersion build_versions.min_sdk
         targetSdkVersion build_versions.target_sdk
         versionCode versions.version_code
         versionName versions.version_name
@@ -93,37 +93,16 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    lintOptions {
-        checkReleaseBuilds false
-        abortOnError false
-    }
 }
+
 dependencies {
     implementation fileTree(dir: '../app/libs', include: ['.jar'])
+    api project(path: ':CommonBase')
     testImplementation deps.junit
     androidTestImplementation deps.atsl.ext_junit
     androidTestImplementation deps.atsl.espresso_core
-    // implementation fileTree(dir: '../app/libs', include: ['*.aar'])
-    // api files('../app/libs/BydApi.0.0.22.jar')
-    // implementation (deps.dx_api.release){
-    // transitive(false)
-    // }
-
     implementation deps.atsl.constraintlayout
-    api deps.dagger
-    api deps.daggerandroid
-    api deps.daggerandroidsupport
-    api 'androidx.lifecycle:lifecycle-viewmodel:2.3.1'
     annotationProcessor deps.daggerandroidprocessor
-    // Dagger 2 的编译时注解处理器（必须）
+    // Dagger 2 的编译时注解处理器（必须）compile annotation process must
     annotationProcessor deps.dagger_compiler
-//    implementation 'com.google.dagger:dagger:2.35.1'
-//    implementation 'com.google.dagger:dagger-android:2.35.1'
-//    implementation 'com.google.dagger:dagger-android-support:2.35.1'
-//    annotationProcessor 'com.google.dagger:dagger-android-processor:2.15'
-//    // Dagger 2 的编译时注解处理器（必须）
-//    annotationProcessor 'com.google.dagger:dagger-compiler:2.35.1'
-//    implementation (deps.bydux_api.release) {
-//        transitive(false)
-//    }
 }

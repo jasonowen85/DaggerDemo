@@ -2,7 +2,6 @@ package com.test.demo.viewmodel;
 
 import com.test.demo.MyApp;
 import com.test.demo.component.DaggerBaseComponent;
-import com.test.demo.model.GearModel;
 import com.test.demo.module.HomeModule;
 import com.test.demo.qualifier.AdasScope;
 import com.test.demo.qualifier.CommonScope;
@@ -52,8 +51,5 @@ public class MainViewModel extends BaseViewModel {
             Log(" adas data = "+ adas.toString()+" hashCode ="+ adas.hashCode());
             Log(" register = "+ register.hashCode());
         }
-
-//        DaggerParentComponent
-
     }
 }

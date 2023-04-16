@@ -7,11 +7,11 @@ public class GearModel {
     private String name;
 
     @Inject
-    public GearModel(){
+    public GearModel() {
         name = " this is gear model";
     }
 
-    public String getName(){
+    public String getName() {
         return name;
     }
 }

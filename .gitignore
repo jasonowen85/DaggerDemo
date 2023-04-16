@@ -9,3 +9,4 @@
 .cxx
 *.log
 *.apk
+/.idea/

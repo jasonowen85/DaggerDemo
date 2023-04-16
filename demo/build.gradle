@@ -1,0 +1,131 @@
+plugins {
+    id 'com.android.library'
+}
+apply from: '../../../build-scripts/common_gradle/android_module.gradle'
+//apply from: './maven_publish.gradle'
+
+def getCurrentTime() {
+    //用日期作为版本号
+    return new Date().format("yyyy_MMdd", TimeZone.getTimeZone("GMT+08:00"))
+}
+
+android {
+    compileSdkVersion build_versions.compile_sdk
+    buildToolsVersion build_versions.build_tools
+    defaultConfig {
+        minSdkVersion 25
+        targetSdkVersion build_versions.target_sdk
+        versionCode versions.version_code
+        versionName versions.version_name
+    }
+    buildTypes {
+        release {
+            buildConfigField "Integer", "SCHEDULE_CORE_NUM", "${SCHEDULE_CORE_NUMBER}"
+//            buildConfigField 'String', 'HostName', rootProject.ext.apirelease.HostName
+        }
+        debug {
+            buildConfigField("Integer", "SCHEDULE_CORE_NUM", "${SCHEDULE_CORE_NUMBER}")
+        }
+    }
+//    project.tasks.whenTaskAdded { Task theTask ->
+//        if (theTask.name == 'assembleRelease') {
+//            theTask.dependsOn(copyResource) // 编译完apk之后再执行自定义task
+//            theTask.mustRunAfter(diyTask) // diyTask在assembleRelease之前执行
+//        }
+//    }
+
+    task copyResource(type: Exec, dependsOn: ['assembleRelease']) {
+        def buildType = module.name + ".apk"
+        def destination = "system/app/" + buildType
+        def purposeDir = "$buildDir/outputs/apk/release"
+        workingDir = "$purposeDir"
+        // def myCommond = ['adb', "install",'display-debug.apk']
+        def myCommand = ['adb', "push", buildType, destination]
+        // def clearData = ['adb', "shell", 'rm -rf', 'data/data/com.android.launcher/databases/']
+        commandLine myCommand
+        // commandLine clearData
+    }
+
+    task clearJar(type: Delete) {
+        def fileName = module.name + "_v" + getCurrentTime()
+        delete "${buildDir}/outputs" + fileName + '.jar'
+    }
+
+    task makeReleaseJar(type: Copy, dependsOn: ['build', 'clearJar']) {
+        def fileName = module.name + "_v" + getCurrentTime() + ".jar"
+        // archiveBaseName = module.name + "_v" + getCurrentTime()
+        // destinationDirectory = file("$buildDir/outputs") // --->into 代替
+        //from('build/intermediates/javac/release')
+        from('build/intermediates/aar_main_jar/release')
+        // 重命名即可 android 4.2+ compile output directory
+        // from('build/intermediates/javac/release')
+        // exclude('/BuildConfig.class') //exclude 命令就是 新jar包需要删除的类或文件
+        // exclude('/BuildConfig\$.class')
+        // exclude('/R.class')
+        // exclude('/R\$.class')
+        // include('**/.class')
+        into("$buildDir/outputs")
+        rename('classes.jar', fileName)
+        //删除存在的
+        // delete 'build/outputs/aar/displaymode-release.aar'
+        // from('../test-common/build/intermediates/classes/release') // 引入其他module class文件
+        // from(project.zipTree('../../../libs/test_api.jar')) // 引入xxx.jar 到编译到jar文件中
+        // into('build/outputs/')
+        // include('classes.jar')
+        // rename ('classes.jar', 'displaymode.jar')
+    }
+    //此函数调用有异常
+//    task proguardJar(dependsOn: ['makeReleaseJar'], type: proguard.gradle.ProGuardTask) {
+//        //manifest 注册的组件对应的 proguard 文件
+//        delete('build/outputs/aar')
+//        delete('build/outputs/logs')
+//        configuration 'proguard-rules.pro'
+//        String inJar = 'build/outputs/'
+//        println(" inJar =" + inJar)
+//        //输入 jar
+//        injars inJar
+//        //输出 jar 的位置和名称
+//        // String outJar = inJar.substring(0, inJar.lastIndexOf(File.separator)) + "/proguard-${makeJar.archiveName}"
+//        String outJar = "proguard-${makeReleaseJar.archiveBaseName}"
+//        outjars outJar
+//        //设置不删除未引用的资源(类，方法等)
+//        dontshrink
+//    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+}
+dependencies {
+    implementation fileTree(dir: '../app/libs', include: ['.jar'])
+    testImplementation deps.junit
+    androidTestImplementation deps.atsl.ext_junit
+    androidTestImplementation deps.atsl.espresso_core
+    // implementation fileTree(dir: '../app/libs', include: ['*.aar'])
+    // api files('../app/libs/BydApi.0.0.22.jar')
+    // implementation (deps.dx_api.release){
+    // transitive(false)
+    // }
+
+    implementation deps.atsl.constraintlayout
+    api deps.dagger
+    api deps.daggerandroid
+    api deps.daggerandroidsupport
+    api 'androidx.lifecycle:lifecycle-viewmodel:2.3.1'
+    annotationProcessor deps.daggerandroidprocessor
+    // Dagger 2 的编译时注解处理器（必须）
+    annotationProcessor deps.dagger_compiler
+//    implementation 'com.google.dagger:dagger:2.35.1'
+//    implementation 'com.google.dagger:dagger-android:2.35.1'
+//    implementation 'com.google.dagger:dagger-android-support:2.35.1'
+//    annotationProcessor 'com.google.dagger:dagger-android-processor:2.15'
+//    // Dagger 2 的编译时注解处理器（必须）
+//    annotationProcessor 'com.google.dagger:dagger-compiler:2.35.1'
+//    implementation (deps.bydux_api.release) {
+//        transitive(false)
+//    }
+}
